@@ -94,26 +94,29 @@ export default {
       this._checkBookTime();
     },
     _checkBookTime() {
-      checkBookTime().then(res => {
-        if (res.success) {
-          if (false) {
-            this.$router.push({
+      this.$router.push({
               path: "/planeSearch"
-            });
-          }else{
-            const startTime = res.obj.startRestTime;
-            const endTime = res.obj.endRestTime;
-            const message = `尊敬的用户，${startTime}~${endTime}点为系统维护时间，如需进行机票预订请拨打客服热线！`
-              this.$dialog.confirm({
-                  title:'温馨提示',
-                  message,
-                  confirmButtonText:'呼叫客服'
-              }).then(() => {
+        });
+      // checkBookTime().then(res => {
+      //   if (res.success) {
+      //     if (false) {
+      //       this.$router.push({
+      //         path: "/planeSearch"
+      //       });
+      //     }else{
+      //       const startTime = res.obj.startRestTime;
+      //       const endTime = res.obj.endRestTime;
+      //       const message = `尊敬的用户，${startTime}~${endTime}点为系统维护时间，如需进行机票预订请拨打客服热线！`
+      //         this.$dialog.confirm({
+      //             title:'温馨提示',
+      //             message,
+      //             confirmButtonText:'呼叫客服'
+      //         }).then(() => {
 
-              })
-          }
-        }
-      });
+      //         })
+      //     }
+      //   }
+      // });
     }
   },
   beforeRouteLeave(to, from, next) {

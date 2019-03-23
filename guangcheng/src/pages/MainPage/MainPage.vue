@@ -4,24 +4,24 @@
           <router-view/>
         </keep-alive>
         <div class="footer-tab" v-if="footshow">
-            <router-link tag="div" class="tab-item" to="/main/apply"  replace>
+            <!-- <router-link tag="div" class="tab-item" to="/main/apply"  replace>
                <div class="item">
                    <span class="icon apply"></span>
                    <div class="content">申请</div>
                </div>
-             </router-link>
+             </router-link> -->
             <router-link tag="div" class="tab-item" to="/main/book" replace>
                 <div class="item">
                     <span class="icon book"></span>
                     <div class="content">预订</div>
                 </div>
             </router-link>
-            <router-link tag="div" class="tab-item" to="/main/trip" replace>
+            <!-- <router-link tag="div" class="tab-item" to="/main/trip" replace>
                 <div class="item">
                     <span class="icon trip"></span>
                     <div class="content">行程</div>
                 </div>
-            </router-link>
+            </router-link> -->
              <router-link tag="div" class="tab-item" to="/main/me" replace>
                 <div class="item">
                     <span class="icon me"></span>
