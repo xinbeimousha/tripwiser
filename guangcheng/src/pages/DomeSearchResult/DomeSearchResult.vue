@@ -138,7 +138,7 @@ export default {
     }
   },
   created() {
-
+   console.log(this.record)
      //如果有国际航程则套用国际机票
      this.record.stops.forEach((value,index)=>{
          value.forEach((value2,index2)=>{
@@ -150,9 +150,9 @@ export default {
       })  
      console.log(this.airRegions);
     this.tripType = this.record.tripType;
-    this.dateBetween = this.record.dateBetween;
-    this.minDate = new Date(this.dateBetween[0].replace(/\-/g,'/'));
-    this.maxDate = new Date(this.dateBetween[1].replace(/\-/g,'/'));
+   // this.dateBetween = this.record.dateBetween;
+   //  this.minDate = new Date(this.dateBetween[0].replace(/\-/g,'/'));
+   //  this.maxDate = new Date(this.dateBetween[1].replace(/\-/g,'/'));
     this.currentDate = new Date(this.record.date[this.page].replace(/\-/g,'/'));
     this._searchPlaneList();
 

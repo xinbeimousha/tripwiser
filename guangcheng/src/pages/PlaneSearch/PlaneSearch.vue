@@ -6,10 +6,10 @@
       @back="goback"
     />
     <div class="search-container">
-      <div class="trip-choosed" @click="showSelet">
+      <!-- <div class="trip-choosed" @click="showSelet">
         <span class="trip-title">{{ tripName }}</span>
         <van-icon name="arrow" />
-      </div>
+      </div> -->
       <div class="flight-detail">
         <van-tabs class="reset"
           @click="chooseTripType"
@@ -165,10 +165,10 @@ export default {
           name: "往返",
           tripType: 1
         },
-        {
-          name: "多程",
-          tripType: 2
-        }
+        // {
+        //   name: "多程",
+        //   tripType: 2
+        // }
       ],//多程还是单程
       planeSearchData:objDeepCopy(planeSearchData),
       tripType: 0,
@@ -202,7 +202,7 @@ export default {
     // 获取舱位等级
     this._getBudgetSpaceType();
     // 获取行程
-    this._getItineraryList();
+    // this._getItineraryList();
     bus.$on('city',(item,index) => {
       let {n,c} = item;
 
@@ -292,16 +292,16 @@ export default {
     // 查询
     query() {
       // 如果没有选择行程,让用户选择行程
-      if (!this.planeSearchData.tripId) {
-        Dialog.alert({
-          title: "提示",
-          message: "请先选择行程",
-          className: "check-tips"
-        }).then(() => {
-          this.showTrip = true;
-        });
-        return;
-      }
+      // if (!this.planeSearchData.tripId) {
+      //   Dialog.alert({
+      //     title: "提示",
+      //     message: "请先选择行程",
+      //     className: "check-tips"
+      //   }).then(() => {
+      //     this.showTrip = true;
+      //   });
+      //   return;
+      // }
       
       // if (this.planeSearchData.stops.f)
      // console.log(this.planeSearchData);
