@@ -148,12 +148,17 @@ export default {
             }
          }) 
       })  
+
      console.log(this.airRegions);
+
     this.tripType = this.record.tripType;
     this.dateBetween = this.record.dateBetween;
     this.minDate = new Date(this.dateBetween[0].replace(/\-/g,'/'));
     this.maxDate = new Date(this.dateBetween[1].replace(/\-/g,'/'));
+
     this.currentDate = new Date(this.record.date[this.page].replace(/\-/g,'/'));
+     console.log(123);
+
     this._searchPlaneList();
 
      //判断是否是从申请页面跳转过来的
@@ -743,6 +748,9 @@ export default {
 
     },
 
+
+
+
     // 预订(这里有异步) async
      async planebook(flight, seat) {
       // 往返或多程，后程航班起飞时间不能早于前程航班到达时间
@@ -888,6 +896,8 @@ export default {
         }
         return true;
     },
+
+
      /**
       * 处理国际查询机票所需要的数据
       * 国际机票只处理单程和往返
@@ -1019,7 +1029,10 @@ export default {
 
         return obj
      },
-    // 整理查询机票返回的航班列表数据
+
+
+
+     // 整理查询机票返回的航班列表数据
     _normalizeFlightData(data) {
       const flightList = [];
       data.forEach(item => {

@@ -5,7 +5,7 @@
         <div class="trip-plan" v-for="(item,index) in item" :key="index">
           <TripContent v-bind:item="item" v-bind:isdetail="isdetail" />
         </div>
-        <p class="no-result" v-if="hasNoOrder">还没有进行中的行程</p>
+        <p class="no-result" v-if="hasNoOrder">还没有计划中的行程</p>
         <p class="no-more" v-if="hasNoMore">没有更多数据了</p>
       </van-list>
     </van-pull-refresh>
@@ -41,7 +41,6 @@ export default {
       };
       const result = await getTravelDetails(Page, showLoading);
       const obj = result.obj;
-      console.log(obj);
       this.loading = false;
       if ((!result.success || !obj || obj.length < 1 )&& this.page === 1) {
         this.hasNoOrder = true;

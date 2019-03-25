@@ -6,10 +6,14 @@
       @back="goback"
     />
     <div class="search-container">
-      <div class="trip-choosed" @click="showSelet">
-        <span class="trip-title">{{ tripName }}</span>
-        <van-icon name="arrow" />
-      </div>
+
+      <!--不需要最上面的选择行程了，可以直接在此页面订票-->
+      <!--<div class="trip-choosed" @click="showSelet">-->
+        <!--<span class="trip-title">{{ tripName }}</span>-->
+        <!--<van-icon name="arrow" />-->
+      <!--</div>-->
+
+
       <div class="flight-detail">
         <van-tabs class="reset"
           @click="chooseTripType"
@@ -165,10 +169,10 @@ export default {
           name: "往返",
           tripType: 1
         },
-        {
-          name: "多程",
-          tripType: 2
-        }
+        // {
+        //   name: "多程",
+        //   tripType: 2
+        // }
       ],//多程还是单程
       planeSearchData:objDeepCopy(planeSearchData),
       tripType: 0,
@@ -292,26 +296,40 @@ export default {
     // 查询
     query() {
       // 如果没有选择行程,让用户选择行程
-      if (!this.planeSearchData.tripId) {
-        Dialog.alert({
-          title: "提示",
-          message: "请先选择行程",
-          className: "check-tips"
-        }).then(() => {
-          this.showTrip = true;
-        });
-        return;
-      }
-      
-      // if (this.planeSearchData.stops.f)
+      // if (!this.planeSearchData.tripId) {
+      //   Dialog.alert({
+      //     title: "提示",
+      //     message: "请先选择行程",
+      //     className: "check-tips"
+      //   }).then(() => {
+      //     this.showTrip = true;
+      //   });
+      //   return;
+      // }
+
+      // 双程的话判断后者时间不能小于前者时间
+       if (this.tripType==1){
+          let datePase1=Date.parse(this.planeSearchData.date[0].replace(/-/g,"/"))
+          let datePase2=Date.parse(this.planeSearchData.date[1].replace(/-/g,"/"))
+          if (datePase1>datePase2){
+             Dialog.alert({
+                title: '提示',
+                message: '出发日期不得晚于返航日期',
+                className:'check-tips'
+             })
+             return false
+          }
+       }
+
+
      // console.log(this.planeSearchData);
       let fromId=this.planeSearchData.stopsIds[0]
        let toId=this.planeSearchData.stopsIds[1]
        let stops=this.planeSearchData.stops
+       
 
       //判断是否有国外城市
       if (stops[fromId].region==1||stops[toId].region==1){
-         console.log(123);
          this._handleCabinRequire();
          // this.tripType=1为单程，2为双程，3为多程和国外没关系
          this._setTripIntoLocal();
@@ -393,9 +411,13 @@ export default {
     },
     // 保存行程记录到本地
     _setTripIntoLocal() {
+      // 广汽定制版添加dateBetween
+
+
+
       let record = {
         date: [],
-        dateBetween:this.dateBetween,
+         dateBetween:[],
         tripType: this.tripType,
         cabinRequire: this.planeSearchData.cabinRequire,
         stops: [],
@@ -410,13 +432,18 @@ export default {
       const { date, stops, stopsIds } = this.planeSearchData;
       const multiStops = [...stopsIds];
       switch (this.tripType) {
+        // 单程
         case 0:
           record.date.push(date[0]);
           record.stops.push([stops[stopsIds[0]], stops[stopsIds[1]]]);
+          record.dateBetween.push(date[0],date[0])
           break;
-        case 1:
+          //双程
+          case 1:
           record.date.push(date[0], date[1]);
           record.stops.push([stops[stopsIds[0]], stops[stopsIds[1]]]);
+          //广汽定制版这里加dateBetween的数据
+          record.dateBetween.push(date[0],date[1])
           break;
         default:
           record.date = date;
@@ -578,7 +605,8 @@ export default {
 
         & > .active-item {
           color: $color-white;
-          background-color: $color-text-active;
+          //background-color: $color-text-active;
+          background-color: rgb(75,162,162);
         }
 
         .item {
@@ -598,7 +626,8 @@ export default {
       font-size: 0.32rem;
       color: $color-white;
       text-align: center;
-      background-color: $color-bg-high;
+      //background-color: $color-bg-high;
+      background-color: rgb(54,162,161);
     }
   }
 }

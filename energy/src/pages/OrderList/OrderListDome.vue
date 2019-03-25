@@ -1,8 +1,8 @@
 <template>
   <div class="list-dome">
     <van-list class="list" v-model="loading" :immediate-check="true" :finished="finished" @load="onload">
-      <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-        <div class="list-item" 
+      <van-pull-refresh  v-model="isLoading" @refresh="onRefresh">
+        <div class="list-item"
           v-for="(orderData,index) in orderDatas"
           :key="index"
           @click="orderDetail(index,orderData.detailId)"
@@ -122,6 +122,9 @@ export default {
     }
   }
 }
+
+
+
 </style>
 
 

@@ -6,7 +6,8 @@
         返回
       </span>
       <div class="search">
-        <van-search placeholder="请输入城市搜索" background='#3B5999' v-model="searchText" />
+        <!-- background='#3B5999'-->
+        <van-search placeholder="请输入城市搜索" background="rgb(54,162,161)" v-model="searchText" />
       </div>
     </div>
     <div class="container">
@@ -176,8 +177,8 @@ export default {
   .title {
     x-middle();
     padding-left: 0.2rem;
-    background-color: $color-bg-high;
-
+    //background-color: $color-bg-high;
+    background-color: rgb(54,162,161)!important;
     .back {
       color: #fff;
 
@@ -198,10 +199,12 @@ export default {
 
     .city >>> .van-tab--active {
       color: $color-text-active;
+
     }
 
     .city >>> .van-tabs__line {
       background-color: $color-text-active;
+
     }
 
     .normal-content {

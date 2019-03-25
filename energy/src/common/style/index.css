@@ -1,0 +1,109 @@
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-test-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  font: 0.3rem/1.5 sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3,
+h4,
+p,
+blockquote,
+figure,
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+}
+main,
+li {
+  display: block;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+}
+strong {
+  font-weight: bold;
+}
+a,
+button {
+  color: inherit;
+  transition: 0.3s;
+}
+a {
+  text-decoration: none;
+}
+button {
+  overflow: visible;
+  border: 0;
+  font: inhert;
+  -webkit-font-smoothing: inherit;
+  letter-spacing: inherit;
+  background: none;
+  cursor: pointer;
+}
+::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+:focus {
+  outline: 0;
+}
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 0;
+}
+input {
+  padding: 0;
+  outline: none;
+  border: none;
+  border-radius: 0;
+}
+html,
+body {
+  height: 100%;
+  touch-action: none;
+}
+body {
+  background-color: #f6f7f9;
+}
+@media (-webkit-min-device-pixel-ratio: 1.5), (min-device-pixel-ratio: 1.5) {
+  .border-1px::after {
+    transform: scaleY(0.7);
+  }
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {
+  .border-1px::after {
+    transform: scaleY(0.5);
+  }
+  .border-1px-top::before {
+    transform: scaleY(0.5);
+  }
+  .border-1px-right::before {
+    transform: scaleX(0.5);
+  }
+}
+.check-tips .van-dialog__message {
+  text-align: center;
+}
+.check-tips .van-button__text {
+  color: #5998ff;
+}
+.van-tabs__line {
+  background-color: #5ababb !important;
+}
+.van-tab--active {
+  color: #5ababb !important;
+}

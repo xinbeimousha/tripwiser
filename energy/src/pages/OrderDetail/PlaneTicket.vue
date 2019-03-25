@@ -131,10 +131,12 @@ export default {
   .title {
     padding: 0.1rem 0.2rem;
     color: #fff;
-    border: 1px solid $color-bg-high;
+    //border: 1px solid $color-bg-high;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    background-color: $color-bg-high;
+
+    //background-color: $color-bg-high;
+    background-color: rgb(95,160,159);
 
     .icon {
       display: inline-block;
@@ -203,7 +205,8 @@ export default {
   padding: 0.2rem;
   font-size: 12px;
   color: #fff;
-  background-color: $color-bg-high;
+  //background-color: $color-bg-high;
+  background-color:rgb(54,162,161);
   border-radius: 8px;
 
   .people {

@@ -330,7 +330,8 @@
         display: flex;
         justify-content: space-around;
         align-items: center;
-        background-color: #3b5999;
+        // background-color: #3b5999;
+        background-color: rgb(90,186,187);
         padding-left: 20px;
         font-size: 0.3rem;
         color: white;
@@ -359,7 +360,8 @@
     .box{
         /*height: 200px;*/
 
-        background-color: #6078ab;
+        //background-color: #6078ab;
+        background-color: rgb(90,186,187);
         div{
             text-align: center;
             font-size: 0.28rem;

@@ -21,12 +21,12 @@
                 </div>
                 <div class="foot" v-if="!isShow">
                     <div class="footLeft" @click="TripOrderList">查看订单</div>
-                    <div class="footRight" v-if="isdetail" @click="showDetail(item.exp.expId)">查看详情</div>
+                    <div class="footRight" v-if="isdetail" @click="showDetail">查看详情</div>
                 </div>
                 <div class="trip-order" v-if="isShow">
-                    <div class="tripdetail" v-if="orderDetail.length">
+                    <div class="tripdetail" v-if="item.OrderDetail && item.OrderDetail.length > 0">
                         <ul class="trip_ul">
-                            <li class="myli"  v-for="(p,index) in orderDetail" v-if="p && p.dtType != -1" :key="index">
+                            <li class="myli"  v-for="(p,index) in item.OrderDetail" v-if="p && p.dtType != -1" :key="index">
                                 <div class="left" v-if="p.sortTime">
                                     <p>{{getTime(p.sortTime)}}</p>
                                     <p>{{getDate(p.sortTime)}}</p>
@@ -61,6 +61,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <i class="fa fa-angle-right"></i>
                                 </div>
                             </li>
                         </ul>
@@ -76,12 +77,10 @@
 </template>
 <script>
 import { getDate1, getDate2, getTime, getDate3 } from "common/js/day.js";
-import { getTravelOrderDetail } from './request.js';
 export default {
   data() {
     return {
-      isShow: false,
-      orderDetail:[]
+      isShow: false
     };
   },
   watch: {
@@ -105,8 +104,8 @@ export default {
     TripOrderList(){
         this.$router.push({path:'/TripOrderList',query:{itemId:this.item.exp.expId}});
     },
-    showDetail(itineraryId) {
-      this._getTravelOrderDetail(itineraryId);
+    showDetail() {
+      this.isShow = true;
     },
     hideDetail() {
       this.isShow = false;
@@ -116,14 +115,6 @@ export default {
     },
     getTime: function(date) {
       return getTime(date);
-    },
-    _getTravelOrderDetail(itineraryId){
-        getTravelOrderDetail(itineraryId).then(res => {
-            this.isShow = true;
-            if(res.success){
-                this.orderDetail = res.obj.OrderDetail;
-            }
-        })
     }
   }
 };

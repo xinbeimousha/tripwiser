@@ -66,7 +66,9 @@ export default {
       background-color: $color-white;
 
       .global-blue {
-        color: $color-text-active;
+        //color: $color-text-active;
+        //预订页面文字颜色
+        color: $color-greenGQ;
       }
 
       .flight-detail {
@@ -113,7 +115,8 @@ export default {
               margin-left: 0.1rem;
               border-radius: 5px;
               color: $color-white;
-              background-color: $color-bg-high;
+              //background-color: $color-bg-high;
+              background-color: $color-greenGQ;
             }
           }
         }

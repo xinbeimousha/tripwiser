@@ -53,7 +53,7 @@ export function checkFlightRule({
   cause,
   contactTelephone,
   passengers,
-  flightCheckPriceDTOList
+  flightCheckPriceDTOList, domainType
 }) {
   const url = 'flightController.do?checkFlightRule';
   const method = 'post';
@@ -64,7 +64,8 @@ export function checkFlightRule({
     cause,
     contactTelephone,
     passengers,
-    flightCheckPriceDTOList
+    flightCheckPriceDTOList,
+     domainType
   }
   return request({
     url,

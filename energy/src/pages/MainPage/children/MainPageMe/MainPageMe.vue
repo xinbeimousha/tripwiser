@@ -10,7 +10,7 @@
       <!--头部-->
       <div style="flex: 1;overflow: hidden;width: 100%;" ref="wrapper" >
         <div>
-        <div class="head" @click="headTap">
+        <div class="head" style="background-color: rgb(90,186,187);" @click="headTap">
       <div class="head-left">
         <img :src="imgUrl" alt=""
         v-if="imgBoll1">
@@ -369,6 +369,7 @@ export default {
   .btn-bottom div{
     font-size: 0.3rem;
     background-color:rgb(64,90,155) ;
+    //background-color: rgb(90,186,187);
     text-align: center;
     color: #fff;
     padding: 8px 0;

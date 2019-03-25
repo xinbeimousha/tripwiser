@@ -139,7 +139,8 @@ export default {
   .price {
     align-self: flex-start;
     width: 1.7rem;
-    color:$color-text-active;
+    //color:$color-text-active;
+    color: $color-greenGQ;
     text-align: right;
   }
 }

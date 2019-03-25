@@ -73,6 +73,7 @@ const router = new Router({
       path: '/',
       name: 'login',
       component: LoginPage,
+      /*
       beforeEnter: (to, from, next) => {
         let code = getQueryString('code');
 
@@ -101,7 +102,7 @@ const router = new Router({
            next();
         }
     }
-
+      */
     },
     {
       path: '/main',

@@ -15,7 +15,7 @@
               v-for="(item,index) in choosedPassengers"
               :key="index"
             >
-              {{item.uname}}
+              {{item.name || item.uname}}
             </div>
           </div>
           <div class="add" @click="isShowPepole">
@@ -73,7 +73,7 @@
 import HeaderTitle from "components/HeaderTitle/HeaderTitle";
 import AirLine from "components/AirlineItem/AirlineItem";
 import { getLocal } from "common/js/storage.js";
-import { getDate2 } from "common/js/day.js";
+import { getTime,getDate2 } from "common/js/day.js";
 import { IDCARDNO } from 'common/js/reg.js';
 import { getOthersInItinerary } from "api/getOthersInItinerary.js";
 import { checkFlightRule, planeBook } from "./api.js";
@@ -82,6 +82,10 @@ import {
   Dialog
 } from "vant";
 import { gobackMixin } from "common/js/mixins.js";
+//机场名称需要的引入
+import { airPortInfos } from "common/js/newairport.js";
+//仓位等级需要的引入
+import { classCode } from "common/js/data.js";
 
 export default {
   components: {
@@ -90,20 +94,25 @@ export default {
   },
   mixins: [gobackMixin],
   created() {
-    this._getOthersInItinerary();
+    // 这个不需要了
+    // this._getOthersInItinerary();
+     this.choosedPassengers=this._handlePassengers()
     this._getAirlineData();
     this._getSingleprice();
   },
   data() {
     return {
-      telephone: 18675961249,
+      telephone: '',
       airlineData: [],
+      // 添加新的乘机人存放数组
       passengers: [],
+      // 所有乘机人信息存放数组
       choosedPassengers:[],
       singlePrice: 0,
       showPeople: false,
       name:'',
-      idCardNo:''
+      idCardNo:'',
+       checkBool:false,//判断是否校验规则过一次
     };
   },
   computed: {
@@ -115,6 +124,7 @@ export default {
     }
   },
   methods: {
+    // 添加新的乘机人
     addPassenger(){
       if(!this.name || !this.idCardNo ){
         Toast('请填写完整的乘客信息');
@@ -135,43 +145,206 @@ export default {
     isShowPepole() {
       this.showPeople = true;
     },
+
+    // 提交订单时如果校验成功则调用该函数提交并跳转
+    async submitSuccess(orderData){
+        const orderResult = await this._planeBook(orderData);
+        if (orderResult.success) {
+           Dialog.alert({
+              title: "预订成功",
+              message: orderResult.msg,
+              className: "check-tips",
+              confirmButtonTexT: "查看订单"
+           }).then(() => {
+              this.$router.push("/order");
+           });
+        } else {
+           let message = '';
+           if(orderResult.obj){
+              orderResult.obj.forEach(item => {
+
+                 message += `<p>${item.replace(';','')}</p>`
+              })
+           }else{
+              message = orderResult.msg
+           }
+           Dialog.alert({
+              title: "预订失败",
+              message,
+              className: "check-tips"
+           }).then(() => {
+              this.goback()
+           });
+        }
+     },
     // 提交订单按钮
     async submitOrder() {
-      const orderData = this._handleOrderdata();
-      const checkRule = await this._checkFlightRule(orderData);
-      if (checkRule.success) {
-        const orderResult = await this._planeBook(orderData);
+      // 判断是否有电话号码
+       if (this.telephone===''){
+          Dialog.alert({
+             title: "提示",
+             message: '手机号码不能为空',
+             className: "check-tips",
+             confirmButtonTexT: "查看订单"
+          });
+          return false;
+       }
+       if(!(/^1[34578]\d{9}$/.test(this.telephone))){
+          Dialog.alert({
+             title: "提示",
+             message: '手机格式有误',
+             className: "check-tips",
+             confirmButtonTexT: "查看订单"
+          });
+          return false;
+       }
 
-        if (orderResult.success) {
-          Dialog.alert({
-            title: "预订成功",
-            message: orderResult.msg,
-            className: "check-tips",
-            confirmButtonTexT: "查看订单"
-          }).then(() => {
-            this.$router.push("/order");
-          });
-        } else {
-          let message = '';
-          if(orderResult.obj){
-            orderResult.obj.forEach(item => {
-              
-              message += `<p>${item.replace(';','')}</p>`
-            })
-          }else{
-            message = orderResult.msg
+
+       // 拿到校验规则需要的数据
+      const orderData = this._handleOrderdata();
+      console.log(this.choosedPassengers);
+
+       //checkbool判断是第几次校验，如果校验过一次第二次就不用校验了
+       if (!this.checkBool){
+          // 进行校验规则校验
+          const checkRule = await this._checkFlightRule(orderData);
+
+          //校验规则成功后
+          if (checkRule.success) {
+             await this.submitSuccess(orderData)
+          } else {
+
+             //校验规则失败后
+             //验价不合格，需要弹出框选择
+             //调整消息提示的排版
+             const msgArr = checkRule.obj;
+             let message = '';
+             msgArr.forEach(item => {
+                message += `<p>${item.reason}</p>`
+             })
+             Dialog.confirm({
+                title: '预订提示',
+                message: message,
+                confirmButtonText:'继续预订',
+                cancelButtonText:'更改航班',
+             }).then(() => {
+                // 继续预订，不改变直接提交
+                this.submitSuccess(orderData)
+             }).catch(()=>{
+                //更改航班
+                //把后台新的airline数据传给他
+                // JSON.parse(getLocal("airlines"))
+                localStorage.setItem('airlines',JSON.stringify(this._changeAriLineData(checkRule)))
+                Dialog.alert({
+                   title: '提示',
+                   message: '已自动获取符合预定规则的机票',
+                   className:'check-tips'
+                }).then(() => {
+                   //说明更换了航班不需要校验第二次
+                   this.checkBool=true
+                   //刷新
+                   // this.$router.go(0)
+                   this.singlePrice=0
+                   // this.choosedPassengers=this._handlePassengers()
+                   this._getAirlineData();
+                   this._getSingleprice();
+                });
+             })
+             //华丽的分割线`````
+
+
           }
-          Dialog.alert({
-            title: "预订失败",
-            message,
-            className: "check-tips"
-          }).then(() => {
-            this.goback()
-          });
-        }
-      } else {
-      }
+
+       } else{
+          //已经校验过一次，可以直接提交
+          await this.submitSuccess(orderData)
+       }
+
+
+
     },
+     //效验不合规，将后台传与的数据给前台数据（未写完）
+     _changeAriLineData(res){
+        //这里的数据木有注释，都是一个个对照来的
+        this._getAirlineData()
+        let newData=this.airlineData
+        //因为是引用类型，内存堆指向一样，所以打印的也一样
+        // console.log('newData:',newData);
+        for(var i = 0; i <res.obj.length ; i++) {
+           console.log(JSON.parse(res.obj[i].minPriceFlightList));
+           let minPriceFlightList=JSON.parse(res.obj[i].minPriceFlightList)
+           let index=res.obj[i].orderIndex;
+           newData[index]={}
+           newData[index].airlineCode=minPriceFlightList.carrier
+           newData[index].arrAirportCode=minPriceFlightList.arrival//起始地三字码
+           newData[index].depAirportCode=minPriceFlightList.depart//结束地三字码
+           //depAirportCode：三字码 depAirportTerm：T几航站楼
+           newData[index].arrAirPortName=this._getAirportName(minPriceFlightList.arrival, minPriceFlightList.arrivalTerminal)
+           newData[index].depAirportName=this._getAirportName(minPriceFlightList.depart, minPriceFlightList.departureTerminal)
+
+           //   arrDate arrTime
+           newData[index].arrDate=minPriceFlightList.arrivalDate.time
+           newData[index].arrTime=getTime(minPriceFlightList.arrivalDate.time)
+           newData[index].depDate=minPriceFlightList.departureDate.time
+           newData[index].depTime=getTime(minPriceFlightList.departureDate.time)
+           //flightName
+           newData[index].flightName=minPriceFlightList.carrier + minPriceFlightList.flightNo
+           newData[index].flightNo=minPriceFlightList.flightNo
+           newData[index].flightType=minPriceFlightList.aircraft
+           newData[index].lowPrice=minPriceFlightList.price//最低价吧
+
+           newData[index].flightCheckPriceDTOList={
+              arrival:minPriceFlightList.arrival,
+              carrier:minPriceFlightList.carrier,
+              classCode:minPriceFlightList.seat.code,
+              depart:minPriceFlightList.depart,
+              departDate:getDate2(minPriceFlightList.departureDate.time),
+              flightNo:minPriceFlightList.flightNo,
+              enginePrice:minPriceFlightList.seat.airportTax,
+              fuelPrice:minPriceFlightList.seat.fuelTax,
+              salesPrice:minPriceFlightList.seat.price,
+              totalPrice:minPriceFlightList.seat.price+minPriceFlightList.seat.airportTax+minPriceFlightList.seat.fuelTax,
+              totalTax:minPriceFlightList.seat.airportTax+minPriceFlightList.seat.fuelTax,
+
+           }
+
+
+           newData[index].seat={
+              airlineType:minPriceFlightList.seat.airlineType,
+              airportTax:minPriceFlightList.seat.airportTax,
+              carrier:minPriceFlightList.seat.carrier,
+              //这里可能有问题
+              className:this._getClassName(minPriceFlightList.seat.code),
+              cmt:minPriceFlightList.seat.cmt,
+              code:minPriceFlightList.seat.code,
+              ei:minPriceFlightList.seat.ei,
+              fareBase:minPriceFlightList.seat.fareBase,
+              fuelTax:minPriceFlightList.seat.fuelTax,
+              price:minPriceFlightList.seat.price,
+              seatRemain:minPriceFlightList.seat.seatRemain,
+              totalPrice:minPriceFlightList.seat.price+minPriceFlightList.seat.fuelTax+minPriceFlightList.seat.airportTax,
+           }
+
+
+           //   添加验价所需要的参数
+           //    newData[i].flight={
+           //       airlineCode:minPriceFlightList.carrier,
+           //       flightNo:minPriceFlightList.flightNo,
+           //       depAirportCode:minPriceFlightList.depart,
+           //       arrAirportCode:minPriceFlightList.arrival,
+           //       depDate:minPriceFlightList.departureDate.time
+           //    }
+
+        }
+        //打印以前的来对比下
+        // console.log('_getAirlineData',this._getAirlineData());
+        console.log('newData2',newData);
+        return newData
+     },
+
+
+
+
     // 提交订单
     async _planeBook(orderData) {
       return await planeBook(orderData);
@@ -186,8 +359,10 @@ export default {
         cause: orderData.cause,//
         contactTelephone: orderData.contactTelephone,//用户电话
         passengers: orderData.passengers,//乘客信息
-        flightCheckPriceDTOList: orderData.flightCheckPriceDTOList//验票返回的飞机信息
+        flightCheckPriceDTOList: orderData.flightCheckPriceDTOList,//验票返回的飞机信息
+         domainType:1,
       };
+
       //还要新增一个参数domainType:1 (国内机票标识)
 
 
@@ -206,7 +381,12 @@ export default {
         this.singlePrice += item.seat.totalPrice;
       });
     },
-    // 获取同行人
+
+
+     /**
+      * 广汽定制版不需要获取同行人，要同行人自己添加
+      */
+     // 获取同行人
     async _getOthersInItinerary() {
       const tripId = JSON.parse(getLocal("record")).tripId;
       const data = await getOthersInItinerary(tripId);
@@ -229,7 +409,10 @@ export default {
         });
       }
     },
-    // 处理乘客信息
+
+
+     // 处理乘客信息（带有行程id的）
+     /*
     _handlePassengers() {
       const passengers = [];
       for (let i = 0; i < this.choosedPassengers.length; i++) {
@@ -250,6 +433,73 @@ export default {
       }
       return passengers;
     },
+     */
+     // 处理乘客信息（直接订票的，没有行程id的）
+     _handlePassengers() {
+        let userInfo=JSON.parse(getLocal('userInfo'))
+        this.telephone=userInfo.mobile||''
+        //自己的用户信息
+        const passengers = [{
+           id: userInfo.uid || '',//用户id
+           name: userInfo.uname,//用户名
+           cardNo: userInfo.userNum,//身份证号
+           telephone: userInfo.mobile||'',//电话号码
+           staffNo: userInfo.uid || '',//员工号
+           orgCode: userInfo.orgCode || '',//部门orgCode
+           psgType: "ADT",//写死
+           departName: userInfo.departName || ''//部门名称
+        }];
+
+        //添加同行人用户信息
+        /*
+        let peersTx=JSON.parse(getLocal("peers"))
+        if (peersTx){
+           for (let i = 0; i < peersTx.length; i++) {
+              let passenger = peersTx[i];
+              // if (!passenger.unum) {
+              //    continue;
+              // }
+              passengers.push({
+                 id: passenger.id || '',//用户id
+                 name: passenger.realname,//用户名
+                 cardNo: passenger.cardNo,//身份证号
+                 telephone: passenger.mobile || this.telephone,//电话号码
+                 staffNo: passenger.id || '',//员工号
+                 orgCode: passenger.orgCode || '',//部门orgCode
+                 psgType: "ADT",//写死
+                 departName: passenger.departName || ''//部门名称
+              });
+           }
+        }
+        */
+
+
+        //添加同行人用户信息new（其实就是加名字和身份证号就行了）
+        if (this.choosedPassengers.length>=2){
+           for (let i = 1; i < this.choosedPassengers.length; i++) {
+              let passenger = this.choosedPassengers[i];
+              // if (!passenger.unum) {
+              //    continue;
+              // }
+              passengers.push({
+                 id: passenger.id || '',//用户id
+                 name: passenger.uname,//用户名
+                 cardNo: passenger.unum,//身份证号
+                 telephone: passenger.mobile || this.telephone,//电话号码
+                 staffNo: passenger.id || '',//员工号
+                 orgCode: passenger.orgCode || '',//部门orgCode
+                 psgType: "ADT",//写死
+                 departName: passenger.departName || ''//部门名称
+              });
+           }
+        }
+
+        return passengers;
+     },
+
+
+
+
     // 处理航线信息
     _handleAirlines() {
       const airlines = [];
@@ -309,7 +559,22 @@ export default {
       };
 
       return orderData;
-    }
+    },
+
+
+     /**
+      *GQ定制版新加的
+      */
+     // 获取机场的名称
+     _getAirportName(code, iterm) {
+        let airportName = "";
+        airportName = airPortInfos[code].airPortName + iterm;
+        return airportName;
+     },
+     // 获取舱位等级的名称
+     _getClassName(code) {
+        return classCode[code] ? classCode[code] : "其他舱位";
+     },
   }
 };
 </script>
@@ -348,7 +613,9 @@ export default {
         }
 
         .add {
-          color: $color-text-active;
+          //color: $color-text-active;
+          //添加乘机人按钮颜色
+          color: $color-greenGQ;
         }
       }
 
@@ -367,7 +634,8 @@ export default {
       font-size: 12px;
 
       .title {
-        color: $color-text-active;
+        //color: $color-text-active;
+        color: $color-greenGQ;
       }
 
       .content {
@@ -390,7 +658,8 @@ export default {
     .submit-order {
       padding: 0.2rem 0.3rem;
       color: #fff;
-      background-color: $color-text-active;
+      //background-color: $color-text-active;
+      background-color: $color-greenGQ;
     }
   }
   .add-passenger >>> .van-cell__title{
@@ -398,7 +667,9 @@ export default {
   }
   .add-passenger {
     .add-pepole >>> .van-cell__value{
-      color:$color-text-active;
+      //color:$color-text-active;
+      //弹出添加框的添加按钮颜色
+      color: $color-greenGQ;
     }
     .select-pepole >>> .van-checkbox__label{
       color:$color-text;

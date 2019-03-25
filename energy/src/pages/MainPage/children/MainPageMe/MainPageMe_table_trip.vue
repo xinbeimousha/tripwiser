@@ -10,7 +10,7 @@
 
             <!--开始时间-->
             <div class="timeBegin" @click="showDateBegin">
-                <img src="./me_money_detail_date.png" alt="">
+                <img src="DiscardImg/me_money_detail_date.png" alt="">
                 <div class="timeBg">开始时间：{{timeBegin}}</div>
                 <div class="head-right">
                     <div class="fa fa-angle-right ico">
@@ -19,7 +19,7 @@
             </div>
             <!--结束时间-->
             <div class="timeEnd timeBegin" @click="showDateEnd">
-                <img src="./me_money_detail_date.png" alt="">
+                <img src="DiscardImg/me_money_detail_date.png" alt="">
                 <div class="timeBg">结束时间：{{timeEnd}}</div>
                 <div class="head-right">
                     <div class="fa fa-angle-right ico">

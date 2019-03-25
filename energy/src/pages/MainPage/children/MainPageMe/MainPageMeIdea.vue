@@ -138,7 +138,8 @@
 
     .btn-bottom div {
         font-size: 0.24rem;
-        background-color: rgb(64, 90, 155);
+        //background-color: rgb(64, 90, 155);
+        background-color: rgb(90,186,187);
         text-align: center;
         color: #fff;
         padding: 8px 0;

@@ -88,8 +88,8 @@ export default {
     padding:0.2rem;
     color :$color-white;
     text-align :center;
-    background-color :$color-bg-high;  
-    
+    //background-color :$color-bg-high;
+    background-color: rgb(54,162,161);
     .btn-left {
       flex:1;
       text-align :left;

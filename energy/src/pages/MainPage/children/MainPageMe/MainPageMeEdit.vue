@@ -3,7 +3,7 @@
         <HeaderTitle title="编辑信息" :btnLeft="true" :btnRight="false" className="fa-plus" @back="fanhTap"
                      class="headerTitle"/>
         <!--头部修改头像-->
-        <div class="head">
+        <div class="head" style="background-color:rgb(90,186,187);">
             <div class="head-img">
 
                 <img :src="imgUrl" alt=""
@@ -132,13 +132,16 @@
             imgBoll2: true
          }
       },
-      mounted() {
+      created(){
          getMeEdit().then(res => {
             console.log(res);
             if (res.success == true) {
                this.info = res.obj
                this.mobile = this.info.mobile
-               this.pickerValue = new Date(this.info.birthday.replace(/\-/g, '/'));
+               if (this.info.birthday){
+                  this.pickerValue = new Date(this.info.birthday.replace(/\-/g, '/'));
+               }
+
                this.imgUrl = this.info.face
 
                //判断是否有图片，没有用本地的
@@ -150,7 +153,7 @@
 
                var newB = this.info.cardId.slice(0, 3)
                var newE = this.info.cardId.slice(12)
-
+               // console.log(this.cartIdChange)
                this.cartIdChange = newB + '*********' + newE
             }
             if ((res.code && res.code == 10001) || (res.msg && res.msg.indexOf("自动登录失败") > -1)) {
@@ -163,6 +166,9 @@
                });
             }
          })
+      },
+      mounted() {
+
 
       },
       methods: {
@@ -426,11 +432,13 @@
     .btn-bottom {
         margin-top: 15px;
         padding: 10px;
+
     }
 
     .btn-bottom div {
         font-size: 0.28rem;
-        background-color: rgb(64, 90, 155);
+        //background-color: rgb(64, 90, 155);
+        background-color: rgb(54,162,161);
         text-align: center;
         color: #fff;
         padding: 8px 0;

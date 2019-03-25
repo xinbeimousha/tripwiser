@@ -1,13 +1,14 @@
 <template>
   <div class="order-list">
     <HeaderTitle 
-      title="订单列表" 
+      title="订单列表"
       :btnLeft="true" 
       @back="goback"
     />
     <van-tabs class="reset" @click="getCurrentComponent">
       <van-tab v-for="tab in orderTabs" :title="tab.title" :key="tab.title" />
     </van-tabs>
+
     <div class="list-view">
       <keep-alive>
         <component :is="currentComponent" />
@@ -80,11 +81,13 @@ export default {
   y-view();
 
   .reset >>> .van-tabs__line {
-    background-color: $color-text-active;
+    //background-color: $color-text-active;
+    background-color: rgb(90,186,187);
   }
 
   .reset >>> .van-tab--active {
-    color: $color-text-active;
+    //color: $color-text-active;
+    color: rgb(90,186,187);
   }
 
   .list-view {
@@ -92,6 +95,8 @@ export default {
     y-view();
   }
 }
+
+
 </style>
 
 

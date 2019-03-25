@@ -73,12 +73,14 @@ export default {
   .item-title {
     x-middle();
     padding-right: 0.2rem;
-    border-1px($color-solid);
+    //border-1px($color-solid);
     line-height: 3;
 
     .title {
       flex: 1;
-      color: $color-bg-high;
+      //color: $color-bg-high;
+      //国内机票的标题
+      color: rgb(54,162,161);
       font-weight: bold;
     }
     .date{
@@ -126,7 +128,8 @@ export default {
       .price{
         flex:1;
         text-align:right;
-        color:$color-text-active;
+        //color:$color-text-active;
+        color:rgb(62,170,170)
       }
     }
     .date {
@@ -146,13 +149,18 @@ export default {
     x-middle();
     padding-right:0.2rem;
     line-height:3;
-    color:$color-text-active;
-
+    //订单取消和查看详情颜色
+    //color:$color-text-active;
+    color: rgb(62,170,170);
     .status{
       flex:1;
     }
   }
 }
+
+
+
+
 </style>
 
 

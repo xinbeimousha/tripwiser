@@ -33,7 +33,8 @@ export default {
     border-radius:8px;
     text-align :center;
     color:#fff;
-    background-color:$color-bg-high;
+    //background-color:$color-bg-high;
+    background-color: rgb(74,162,162);
   }
 }
 </style>

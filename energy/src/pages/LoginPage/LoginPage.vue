@@ -1,19 +1,19 @@
 <template>
     <div class="login">
         <div class="logo">
-            <img src="./index_logo.png" alt="">
+            <img src="./index_logoGQ.png" alt="">
         </div>
         <div class="main">
             <div class="username">
                 <div class="icon">
-                    <img src="./index_name.png" alt="">
+                    <img src="./index_nameGQ.png" alt="">
                 </div>
                 <input type="text" class="text" v-model="username">
                 <div class="icon"></div>
             </div>
             <div class="password">
                 <div class="icon">
-                    <img src="./index_psw.png" alt="">
+                    <img src="./index_pswGQ.png" alt="">
                 </div>
                 <input  type="password" class="psd" v-model="password">
                 <div class="icon"></div>
@@ -58,7 +58,9 @@ export default {
       username: "",
       password: "",
       savedUser: false,
-      code:''
+      code:'',
+    //   广汽新能源需要账户前面加A14
+       newName:'',
     };
   },
   methods: {
@@ -87,7 +89,10 @@ export default {
     // 自动填写用户名和密码
     // 处理登录后的数据
     _login() {
-      login(this.username, this.password).then(res => {
+       // 广汽新能源的要在账号前面加A14
+       this.newName='A14'+this.username
+       // console.log(this.newName, this.password)
+      login(this.newName, this.password).then(res => {
         if (res.success) {
           this._saveUserLoginInfo();
           this._setTokentoLocal(res.obj);
@@ -140,14 +145,18 @@ export default {
 .login {
     y-view();
     full-fixed(2);
-    background: url('./index_footer.png') no-repeat bottom;
-    background-color: $color-bg-high;
+    background: url('./index_footerGQ.png') no-repeat bottom;
+    //background-color: $color-bg-high;
+    background-color: rgb(90,186,187);
     background-size: 100%;
 
     .logo {
         width: 1.28rem;
         padding: 1rem 0;
         margin: 0 auto;
+        img{
+            height:1.5rem;
+        }
     }
 
     .main {
@@ -201,7 +210,9 @@ export default {
             font-size: 0.32rem;
             color: $color-white;
             text-align: center;
-            background-color: $color-text-active;
+            //background-color: $color-text-active;
+            background-color:rgb(54,162,161);
+
         }
     }
 
